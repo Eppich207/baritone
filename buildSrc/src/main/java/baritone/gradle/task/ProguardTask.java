@@ -63,6 +63,18 @@ public class ProguardTask extends BaritoneGradleTask {
         super.doFirst();
         super.verifyArtifacts();
 
+        // ProGuard needs jmod files to resolve JDK library classes. When the jmods directory is
+        // absent (e.g. Adoptium Temurin JRE or stripped JDK installs), skip ProGuard and copy
+        // the unoptimized JAR to the api/standalone slots so createDist still has all its inputs.
+        Path javaHome = getJavaLauncherForProguard().getMetadata().getInstallationPath().getAsFile().toPath();
+        if (!Files.isDirectory(javaHome.resolve("jmods"))) {
+            getProject().getLogger().warn("[Baritone] jmods directory not found at {}; skipping ProGuard optimisation.", javaHome.resolve("jmods"));
+            processArtifact();
+            Files.copy(this.artifactUnoptimizedPath, this.artifactApiPath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(this.artifactUnoptimizedPath, this.artifactStandalonePath, StandardCopyOption.REPLACE_EXISTING);
+            return;
+        }
+
         // "Haha brady why don't you make separate tasks"
         downloadProguard();
         extractProguard();
