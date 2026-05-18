@@ -27,7 +27,9 @@ archivesBaseName = archivesBaseName + "-neoforge"
 unimined.minecraft {
 
     neoForge {
-        loader project.neoforge_version
+        // Use full Maven coord: Unimined's $mc.$dep template can't produce 26.1.2:universal
+        // because it would prepend the MC version (26.1.2) and require a build-number suffix.
+        loader "net.neoforged:neoforge:${project.neoforge_version}:universal"
         mixinConfig ["mixins.baritone.json"]
     }
 
