@@ -93,8 +93,7 @@ allprojects {
         version rootProject.minecraft_version
 
         mappings {
-            mojmap()
-
+            // MC 26.1 ships the client JAR with Mojang names already (no ProGuard mappings provided)
             devFallbackNamespace "official"
         }
     }
