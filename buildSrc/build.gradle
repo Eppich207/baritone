@@ -40,10 +40,23 @@ repositories {
     mavenCentral()
 }
 
+// MC 26.1 client JAR is compiled with Java 25 (class file version 69).
+// Unimined 1.4.1 bundles ASM 9.7.1 which only supports up to Java 23.
+// Force ASM 9.10 (supports Java 25) across the entire build classpath.
+configurations.all {
+    resolutionStrategy {
+        force 'org.ow2.asm:asm:9.10'
+        force 'org.ow2.asm:asm-tree:9.10'
+        force 'org.ow2.asm:asm-commons:9.10'
+        force 'org.ow2.asm:asm-util:9.10'
+        force 'org.ow2.asm:asm-analysis:9.10'
+    }
+}
+
 dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
     implementation group: 'commons-io', name: 'commons-io', version: '2.7'
 
-    implementation group: 'xyz.wagyourtail.unimined', name: 'xyz.wagyourtail.unimined.gradle.plugin', version: '1.4.2-SNAPSHOT'
-    implementation group: 'xyz.wagyourtail.unimined.mapping', name: 'unimined-mapping-library-jvm', version: '1.2.2'
+    implementation group: 'xyz.wagyourtail.unimined', name: 'xyz.wagyourtail.unimined.gradle.plugin', version: '1.4.1'
+    implementation group: 'xyz.wagyourtail.unimined.mapping', name: 'unimined-mapping-library-jvm', version: '1.2.1'
 }
