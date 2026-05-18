@@ -53,19 +53,9 @@ allprojects {
             name = 'spongepowered-repo'
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
-        // Fabric intermediary POMs always declare version "0.0.0" regardless of the actual MC
-        // version. Gradle 8.14.4 strict metadata validation rejects this mismatch. Use an
-        // artifact-only metadata source for intermediary to bypass the POM version check.
-        maven {
-            name = 'fabric-maven-intermediary'
-            url = 'https://maven.fabricmc.net/'
-            metadataSources { artifact() }
-            content { includeModule('net.fabricmc', 'intermediary') }
-        }
         maven {
             name = 'fabric-maven'
             url = 'https://maven.fabricmc.net/'
-            content { excludeModule('net.fabricmc', 'intermediary') }
         }
         maven {
             name = 'impactdevelopment-repo'
@@ -103,9 +93,9 @@ allprojects {
         version rootProject.minecraft_version
 
         mappings {
-            // MC 26.1.2 ships the client JAR with Mojang names already (no ProGuard mappings provided).
-            // devFallbackNamespace is a no-op in Unimined 1.4.1; use devNamespace directly.
-            devNamespace "official"
+            mojmap()
+
+            devFallbackNamespace "official"
         }
     }
 

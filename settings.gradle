@@ -19,11 +19,7 @@ pluginManagement {
     repositories {
         mavenLocal()
         maven {
-            name = 'WagYourMavenReleases'
-            url = 'https://maven.wagyourtail.xyz/releases'
-        }
-        maven {
-            name = 'WagYourMavenSnapshots'
+            name = 'WagYourMaven'
             url = 'https://maven.wagyourtail.xyz/snapshots'
         }
         maven {
