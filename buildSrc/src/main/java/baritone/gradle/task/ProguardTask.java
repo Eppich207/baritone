@@ -132,9 +132,16 @@ public class ProguardTask extends BaritoneGradleTask {
         template.add(0, "-injars '" + this.artifactPath.toString() + "'");
         template.add(1, "-outjars '" + this.getTemporaryFile(PROGUARD_EXPORT_PATH) + "'");
 
-        template.add(2, "-libraryjars  <java.home>/jmods/java.base.jmod(!**.jar;!module-info.class)");
-        template.add(3, "-libraryjars  <java.home>/jmods/java.desktop.jmod(!**.jar;!module-info.class)");
-        template.add(4, "-libraryjars  <java.home>/jmods/jdk.unsupported.jmod(!**.jar;!module-info.class)");
+        // Use jmod files when available (full JDK), otherwise fall back to the jimage lib/modules
+        // file (supported by ProGuard 7.1+) for JDK installs that omit the jmods directory.
+        Path javaHome = getJavaLauncherForProguard().getMetadata().getInstallationPath().getAsFile().toPath();
+        if (Files.isDirectory(javaHome.resolve("jmods"))) {
+            template.add(2, "-libraryjars  <java.home>/jmods/java.base.jmod(!**.jar;!module-info.class)");
+            template.add(3, "-libraryjars  <java.home>/jmods/java.desktop.jmod(!**.jar;!module-info.class)");
+            template.add(4, "-libraryjars  <java.home>/jmods/jdk.unsupported.jmod(!**.jar;!module-info.class)");
+        } else {
+            template.add(2, "-libraryjars  <java.home>/lib/modules");
+        }
 
         {
             final Stream<File> libraries;
