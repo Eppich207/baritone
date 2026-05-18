@@ -93,8 +93,9 @@ allprojects {
         version rootProject.minecraft_version
 
         mappings {
-            // MC 26.1 ships the client JAR with Mojang names already (no ProGuard mappings provided)
-            devFallbackNamespace "official"
+            // MC 26.1.2 ships the client JAR with Mojang names already (no ProGuard mappings provided).
+            // devFallbackNamespace is a no-op in Unimined 1.4.1; use devNamespace directly.
+            devNamespace "official"
         }
     }
 
