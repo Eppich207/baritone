@@ -25,6 +25,9 @@ plugins {
 archivesBaseName = archivesBaseName + "-neoforge"
 
 unimined.minecraft {
+    // NeoForge 26.1.2.59-beta targets MC 26.1.2; override the global minecraft_version (26.1)
+    // so Unimined fetches the correct base MC jar for patching.
+    version "26.1.2"
 
     neoForge {
         // Use full Maven coord: Unimined's $mc.$dep template can't produce 26.1.2:universal
