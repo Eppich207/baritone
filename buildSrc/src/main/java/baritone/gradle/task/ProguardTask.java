@@ -63,6 +63,18 @@ public class ProguardTask extends BaritoneGradleTask {
         super.doFirst();
         super.verifyArtifacts();
 
+        // ProGuard needs jmod files to resolve JDK library classes. When the jmods directory is
+        // absent (e.g. Adoptium Temurin JRE or stripped JDK installs), skip ProGuard and copy
+        // the unoptimized JAR to the api/standalone slots so createDist still has all its inputs.
+        Path javaHome = getJavaLauncherForProguard().getMetadata().getInstallationPath().getAsFile().toPath();
+        if (!Files.isDirectory(javaHome.resolve("jmods"))) {
+            getProject().getLogger().warn("[Baritone] jmods directory not found at {}; skipping ProGuard optimisation.", javaHome.resolve("jmods"));
+            processArtifact();
+            Files.copy(this.artifactUnoptimizedPath, this.artifactApiPath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(this.artifactUnoptimizedPath, this.artifactStandalonePath, StandardCopyOption.REPLACE_EXISTING);
+            return;
+        }
+
         // "Haha brady why don't you make separate tasks"
         downloadProguard();
         extractProguard();
@@ -132,16 +144,9 @@ public class ProguardTask extends BaritoneGradleTask {
         template.add(0, "-injars '" + this.artifactPath.toString() + "'");
         template.add(1, "-outjars '" + this.getTemporaryFile(PROGUARD_EXPORT_PATH) + "'");
 
-        // Use jmod files when available (full JDK), otherwise fall back to the jimage lib/modules
-        // file (supported by ProGuard 7.1+) for JDK installs that omit the jmods directory.
-        Path javaHome = getJavaLauncherForProguard().getMetadata().getInstallationPath().getAsFile().toPath();
-        if (Files.isDirectory(javaHome.resolve("jmods"))) {
-            template.add(2, "-libraryjars  <java.home>/jmods/java.base.jmod(!**.jar;!module-info.class)");
-            template.add(3, "-libraryjars  <java.home>/jmods/java.desktop.jmod(!**.jar;!module-info.class)");
-            template.add(4, "-libraryjars  <java.home>/jmods/jdk.unsupported.jmod(!**.jar;!module-info.class)");
-        } else {
-            template.add(2, "-libraryjars  <java.home>/lib/modules");
-        }
+        template.add(2, "-libraryjars  <java.home>/jmods/java.base.jmod(!**.jar;!module-info.class)");
+        template.add(3, "-libraryjars  <java.home>/jmods/java.desktop.jmod(!**.jar;!module-info.class)");
+        template.add(4, "-libraryjars  <java.home>/jmods/jdk.unsupported.jmod(!**.jar;!module-info.class)");
 
         {
             final Stream<File> libraries;
