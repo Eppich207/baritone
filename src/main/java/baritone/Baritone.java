@@ -70,6 +70,7 @@ public class Baritone implements IBaritone {
     private final LookBehavior lookBehavior;
     private final InventoryBehavior inventoryBehavior;
     private final InputOverrideHandler inputOverrideHandler;
+    private final TorchBehavior torchBehavior;
 
     private final FollowProcess followProcess;
     private final MineProcess mineProcess;
@@ -110,6 +111,7 @@ public class Baritone implements IBaritone {
             this.inventoryBehavior    = this.registerBehavior(InventoryBehavior::new);
             this.inputOverrideHandler = this.registerBehavior(InputOverrideHandler::new);
             this.registerBehavior(WaypointBehavior::new);
+            this.torchBehavior        = this.registerBehavior(TorchBehavior::new);
         }
 
         this.pathingControlManager = new PathingControlManager(this);
@@ -184,6 +186,11 @@ public class Baritone implements IBaritone {
 
     public InventoryBehavior getInventoryBehavior() {
         return this.inventoryBehavior;
+    }
+
+    @Override
+    public TorchBehavior getTorchBehavior() {
+        return this.torchBehavior;
     }
 
     @Override

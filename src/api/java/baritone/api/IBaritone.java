@@ -19,6 +19,7 @@ package baritone.api;
 
 import baritone.api.behavior.ILookBehavior;
 import baritone.api.behavior.IPathingBehavior;
+import baritone.api.behavior.ITorchBehavior;
 import baritone.api.cache.IWorldProvider;
 import baritone.api.command.manager.ICommandManager;
 import baritone.api.event.listener.IEventBus;
@@ -39,6 +40,12 @@ public interface IBaritone {
      * @see IPathingBehavior
      */
     IPathingBehavior getPathingBehavior();
+
+    /**
+     * @return The {@link ITorchBehavior} instance
+     * @see ITorchBehavior
+     */
+    ITorchBehavior getTorchBehavior();
 
     /**
      * @return The {@link ILookBehavior} instance

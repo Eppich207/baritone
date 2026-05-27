@@ -1555,6 +1555,16 @@ public final class Settings {
     public final Setting<Boolean> allowWalkOnMagmaBlocks = new Setting<>(false);
 
     /**
+     * Automatically place torches while walking/pathfinding
+     */
+    public final Setting<Boolean> autoTorch = new Setting<>(false);
+
+    /**
+     * Place a torch every N blocks traveled (horizontal distance)
+     */
+    public final Setting<Integer> autoTorchInterval = new Setting<>(10);
+
+    /**
      * A map of lowercase setting field names to their respective setting
      */
     public final Map<String, Setting<?>> byLowerName;
